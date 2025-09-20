@@ -6,18 +6,17 @@
     <title>G112類產線AI導入專案 (Bilingual) | G112 Production Line AI Project</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Neon Noir (Deep space background, light cards, vibrant gradient accents) -->
-    <!-- Application Structure Plan: The SPA is designed as a top-to-bottom narrative journey. It starts with a broad introduction to the G112 production line, then narrows down to the core problem (the inefficiencies of manual inspection), presents the proposed AI solution and its technological components, visualizes the new automated workflow, and finally quantifies the benefits. This structure was chosen to guide the user logically through the problem-solution framework, making the argument for AI adoption compelling and easy to follow, which is more effective for persuasion than a simple report structure. Key interactions include hover-to-reveal module details and an animated chart for direct comparison. -->
-    <!-- Visualization & Content Choices: 
-        1. G112 Modules: Report Info -> List of 6 hardware modules. Goal -> Inform & Organize. Viz -> Interactive cards with hover effects. Interaction -> Hover to show description. Justification -> More engaging than a static list, encourages exploration. Library -> HTML/CSS.
-        2. Manual vs. AI: Report Info -> Pain points of manual inspection and goals of AI. Goal -> Compare & Persuade. Viz -> Side-by-side text comparison and a bar chart. Interaction -> Animated chart loading with tooltips. Justification -> A quantitative chart provides undeniable proof of AI's superiority in key metrics (speed, accuracy, cost). Library -> Chart.js.
-        3. Tech Stack: Report Info -> YOLO, OpenCV, NVIDIA Jetson. Goal -> Inform. Viz -> Three distinct feature cards. Interaction -> Static display with icons for quick recognition. Justification -> Cleanly presents the core technologies of the solution. Library -> HTML/CSS.
-        4. Workflow: Report Info -> The process of automated detection. Goal -> Explain a process. Viz -> A step-by-step visual flowchart with icons and technical details. Interaction -> Static visual flow. Justification -> Simplifies a complex process into an easily digestible visual sequence. Library -> HTML/CSS.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    
+    <!-- Design Justification Comments -->
+    <!-- Overall Strategy: Transitioned from a static, text-centric report to a dynamic, visually-driven narrative. The goal is to make the complex technical information more accessible and engaging for a broader audience, including non-technical stakeholders, by using modern web design principles. -->
+    <!-- Layout: Replaced the centered, linear layout with an alternating grid structure (image-left/text-right, then text-left/image-right). This creates a more dynamic visual flow, breaking up long sections of text and guiding the user's eye more effectively down the page. -->
+    <!-- Visuals: Replaced emojis with the professional 'Lucide' icon library for a cleaner, more consistent, and tech-oriented aesthetic. Added illustrative images from a placeholder service to visually anchor key sections like 'Topic Selection', providing context that icons alone cannot. This "show, don't tell" approach makes the concepts easier to grasp. -->
+    <!-- Interactivity: Enhanced user engagement by adding scroll-triggered animations. Elements now fade-in and slide-up as they enter the viewport. This subtle motion makes the site feel more alive and polished. Hover effects on cards and buttons were also refined for better feedback. -->
+    <!-- Typography & Color: Maintained the professional dark theme but enhanced the gradient text for more impact. Typography was adjusted for better hierarchy, making headings stand out more clearly from body text. -->
     <style>
         body {
             font-family: 'Noto Sans TC', 'Poppins', sans-serif;
@@ -41,28 +40,62 @@
         .gradient-bg-dark {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
         }
-        .module-card-inner {
-            transition: transform 0.3s ease, background-color 0.3s ease;
-        }
-        .gradient-border:hover .module-card-inner {
-            transform: translateY(-8px);
-            background-color: #f1f5f9;
-        }
-        .workflow-step .step-icon {
-             transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-             box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-        }
-        .workflow-step:hover .step-icon {
-            background-color: #3b82f6;
-            color: white;
-            transform: scale(1.1);
-            box-shadow: 0 0 25px rgba(59, 130, 246, 0.8);
-        }
         .gradient-text {
             background-image: linear-gradient(to right, #60a5fa, #34d399, #fde047);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+        }
+        .nav-link-underline {
+            position: relative;
+            padding-bottom: 8px;
+        }
+        .nav-link-underline::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background-image: linear-gradient(to right, #60a5fa, #34d399);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease-in-out;
+        }
+        .nav-link-underline:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        /* Scroll Animation Styles */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Neon Glow Effect */
+        .card-glow {
+            --glow-color: #60a5fa; /* Default blue glow */
+            --glow-color-faded: rgba(96, 165, 250, 0.3);
+            
+            border: 1px solid var(--glow-color-faded);
+            box-shadow: 0 0 3px var(--glow-color-faded);
+            transition: box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .card-glow:hover {
+            border-color: var(--glow-color);
+            box-shadow: 0 0 8px var(--glow-color), 0 0 20px var(--glow-color-faded);
+        }
+        .workflow-icon-glow {
+            transition: box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .workflow-icon-glow:hover {
+            transform: scale(1.05);
+            border-color: #60a5fa;
+            box-shadow: 0 0 8px #60a5fa, 0 0 20px rgba(96, 165, 250, 0.5);
         }
     </style>
 </head>
@@ -71,109 +104,137 @@
     <header class="bg-slate-900/80 backdrop-blur-lg sticky top-0 z-50 shadow-lg shadow-black/20">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div>
-                <h1 class="text-3xl font-bold text-white">G112類產線AI專案</h1>
-                <p class="text-base text-slate-400 font-sans">G112 Production Line AI Project</p>
+                <h1 class="text-2xl font-bold text-white">G112 AI Project</h1>
+                <p class="text-sm text-slate-400 font-sans">Automated Defect Detection</p>
             </div>
-            <ul class="hidden md:flex space-x-8 text-lg font-semibold">
-                <li><a href="#g112-line" class="text-slate-300 hover:text-white transition-colors duration-300">產線介紹<span class="block text-base font-normal text-slate-500">Intro</span></a></li>
-                <li><a href="#challenge" class="text-slate-300 hover:text-white transition-colors duration-300">挑戰與目標<span class="block text-base font-normal text-slate-500">Challenge</span></a></li>
-                <li><a href="#solution" class="text-slate-300 hover:text-white transition-colors duration-300">AI解決方案<span class="block text-base font-normal text-slate-500">Solution</span></a></li>
-                <li><a href="#workflow" class="text-slate-300 hover:text-white transition-colors duration-300">運作流程<span class="block text-base font-normal text-slate-500">Workflow</span></a></li>
-                <li><a href="#references" class="text-slate-300 hover:text-white transition-colors duration-300">參考資料<span class="block text-base font-normal text-slate-500">References</span></a></li>
+            <ul class="hidden md:flex space-x-8 text-base font-medium">
+                <li><a href="#g112-line" class="nav-link-underline text-slate-300 hover:text-white">產線介紹<span class="block text-xs font-normal text-slate-500">Intro</span></a></li>
+                <li><a href="#challenge" class="nav-link-underline text-slate-300 hover:text-white">挑戰目標<span class="block text-xs font-normal text-slate-500">Challenge</span></a></li>
+                <li><a href="#solution" class="nav-link-underline text-slate-300 hover:text-white">解決方案<span class="block text-xs font-normal text-slate-500">Solution</span></a></li>
+                <li><a href="#workflow" class="nav-link-underline text-slate-300 hover:text-white">運作流程<span class="block text-xs font-normal text-slate-500">Workflow</span></a></li>
+                <li><a href="#references" class="nav-link-underline text-slate-300 hover:text-white">參考資料<span class="block text-xs font-normal text-slate-500">References</span></a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <section id="hero" class="gradient-bg-dark">
-            <div class="container mx-auto px-6 py-24 md:py-32 text-center">
-                <h2 class="text-6xl md:text-7xl font-bold text-white mb-4 gradient-text">導入AI技術，實現智慧品質控管</h2>
-                <p class="text-2xl text-slate-300 font-sans">Implementing AI for Smart Quality Control</p>
-                <p class="text-2xl md:text-3xl text-slate-200 max-w-4xl mx-auto mt-6">本專案聚焦於G112類產線的「外觀瑕疵自動檢測」模組，旨在利用先進的AI視覺技術，解決傳統人工檢測的痛點，提升生產效率與產品質量。</p>
-                <p class="text-xl text-slate-400 max-w-4xl mx-auto mt-2 font-sans">This project focuses on the "Automated Visual Defect Detection" module of the G112 production line, aiming to solve the pain points of manual inspection by using advanced AI vision technology to improve efficiency and product quality.</p>
+        <section id="hero" class="gradient-bg-dark relative overflow-hidden">
+             <!-- Animated background shapes -->
+            <div class="absolute top-0 left-0 w-full h-full z-0">
+                <div class="absolute -top-20 -left-20 w-72 h-72 bg-blue-500/10 rounded-full filter blur-3xl animate-pulse"></div>
+                <div class="absolute -bottom-20 -right-20 w-96 h-96 bg-emerald-500/10 rounded-full filter blur-3xl animate-pulse animation-delay-3000"></div>
+            </div>
+            <div class="container mx-auto px-6 py-24 md:py-32 text-center relative z-10">
+                <h2 class="text-5xl md:text-7xl font-bold text-white mb-4"><span class="gradient-text">導入AI技術，實現智慧品質控管</span></h2>
+                <p class="text-xl text-slate-300 font-sans">Implementing AI for Smart Quality Control</p>
+                <p class="text-lg md:text-xl text-slate-200 max-w-4xl mx-auto mt-6">本專案聚焦於G112類產線的「外觀瑕疵自動檢測」模組，旨在利用先進的AI視覺技術，解決傳統人工檢測的痛點，提升生產效率與產品質量。</p>
+                <p class="text-base text-slate-400 max-w-4xl mx-auto mt-2 font-sans">This project focuses on the "Automated Visual Defect Detection" module of the G112 production line, aiming to solve the pain points of manual inspection by using advanced AI vision technology to improve efficiency and product quality.</p>
             </div>
         </section>
 
         <section id="g112-line" class="py-16 md:py-24">
             <div class="container mx-auto px-6">
-                <div class="text-center mb-16">
-                    <h3 class="text-5xl md:text-6xl font-bold text-white gradient-text">G112類產線：智慧製造的基石</h3>
-                    <p class="text-2xl text-slate-400 font-sans mt-2">The G112 Production Line: A Cornerstone of Smart Manufacturing</p>
-                    <p class="mt-4 text-xl text-slate-300 max-w-4xl mx-auto">G112類產線整合了多個自動化硬體模組，模擬從物料搬運到檢測分類的完整流程。以下為構成此智慧產線的核心單元。</p>
-                    <p class="text-lg text-slate-400 max-w-4xl mx-auto mt-2 font-sans">The G112 line integrates multiple automated hardware modules to simulate the entire process from material handling to inspection and sorting. The following are the core units of this smart production line.</p>
+                <div class="text-center mb-16 reveal">
+                    <h3 class="text-4xl md:text-5xl font-bold text-white"><span class="gradient-text">G112類產線：智慧製造的基石</span></h3>
+                    <p class="text-xl text-slate-400 font-sans mt-2">The G112 Production Line: A Cornerstone of Smart Manufacturing</p>
+                    <p class="mt-4 text-lg text-slate-300 max-w-3xl mx-auto">G112類產線整合了多個自動化硬體模組，模擬從物料搬運到檢測分類的完整流程。以下為構成此智慧產線的核心單元。</p>
+                    <p class="text-base text-slate-400 max-w-3xl mx-auto mt-2 font-sans">The G112 line integrates multiple automated hardware modules to simulate the entire process from material handling to inspection and sorting. The following are the core units of this smart production line.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="gradient-border p-1 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 h-full">
-                        <div class="module-card-inner bg-slate-100 p-6 rounded-lg text-slate-800 h-full">
-                            <h4 class="font-bold text-2xl">CV輸送帶平台</h4>
-                            <p class="text-slate-500 text-lg font-sans">CV Conveyor Platform</p>
-                            <p class="text-slate-600 mt-2 text-lg">擔任產線的物流骨幹，負責物件的連續傳送，是串連各工作站的基礎。</p>
-                            <p class="text-base text-slate-500 font-sans mt-1">Serves as the logistical backbone, responsible for the continuous transport of items, connecting all workstations.</p>
+                    <!-- Card 1 -->
+                    <div class="card-glow bg-slate-800 p-6 rounded-xl hover:-translate-y-2 reveal" style="--glow-color: #60a5fa; --glow-color-faded: rgba(96, 165, 250, 0.3);">
+                        <div class="flex items-center gap-4 mb-4">
+                           <i data-lucide="move-3d" class="w-10 h-10 text-blue-400 flex-shrink-0"></i>
+                           <div>
+                                <h4 class="font-bold text-xl text-white">CV輸送帶平台</h4>
+                                <p class="text-slate-400 text-sm font-sans">CV Conveyor Platform</p>
+                           </div>
                         </div>
+                        <p class="text-slate-300 text-base">擔任產線的物流骨幹，負責物件的連續傳送，是串連各工作站的基礎。</p>
+                        <p class="text-sm text-slate-400 font-sans mt-1">Serves as the logistical backbone, responsible for the continuous transport of items, connecting all workstations.</p>
                     </div>
-                    <div class="gradient-border p-1 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 h-full">
-                        <div class="module-card-inner bg-slate-100 p-6 rounded-lg text-slate-800 h-full">
-                             <h4 class="font-bold text-2xl">雙軸搬運平台</h4>
-                             <p class="text-slate-500 text-lg font-sans">2-Axis Handling Platform</p>
-                             <p class="text-slate-600 mt-2 text-lg">進行精準的水平與垂直移動，用於工位間的物料快速、準確轉移。</p>
-                             <p class="text-base text-slate-500 font-sans mt-1">Performs precise horizontal and vertical movements for rapid and accurate material transfer between stations.</p>
+                    <!-- Card 2 -->
+                    <div class="card-glow bg-slate-800 p-6 rounded-xl hover:-translate-y-2 reveal" style="--glow-color: #60a5fa; --glow-color-faded: rgba(96, 165, 250, 0.3); transition-delay: 100ms;">
+                        <div class="flex items-center gap-4 mb-4">
+                           <i data-lucide="move" class="w-10 h-10 text-blue-400 flex-shrink-0"></i>
+                           <div>
+                                <h4 class="font-bold text-xl text-white">雙軸搬運平台</h4>
+                                <p class="text-slate-400 text-sm font-sans">2-Axis Handling Platform</p>
+                           </div>
                         </div>
+                        <p class="text-slate-300 text-base">進行精準的水平與垂直移動，用於工位間的物料快速、準確轉移。</p>
+                        <p class="text-sm text-slate-400 font-sans mt-1">Performs precise horizontal and vertical movements for rapid and accurate material transfer between stations.</p>
                     </div>
-                    <div class="gradient-border p-1 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 h-full">
-                        <div class="module-card-inner bg-slate-100 p-6 rounded-lg text-slate-800 h-full">
-                            <h4 class="font-bold text-2xl">物件翻轉平台</h4>
-                            <p class="text-slate-500 text-lg font-sans">Object Flipping Platform</p>
-                            <p class="text-slate-600 mt-2 text-lg">將物件進行180度翻轉，以利於攝影機對產品的正反兩面進行檢測。</p>
-                            <p class="text-base text-slate-500 font-sans mt-1">Flips objects 180 degrees to allow cameras to inspect both the front and back sides of the product.</p>
+                     <!-- Card 3 -->
+                    <div class="card-glow bg-slate-800 p-6 rounded-xl hover:-translate-y-2 reveal" style="--glow-color: #60a5fa; --glow-color-faded: rgba(96, 165, 250, 0.3); transition-delay: 200ms;">
+                        <div class="flex items-center gap-4 mb-4">
+                           <i data-lucide="rotate-ccw" class="w-10 h-10 text-blue-400 flex-shrink-0"></i>
+                           <div>
+                                <h4 class="font-bold text-xl text-white">物件翻轉平台</h4>
+                                <p class="text-slate-400 text-sm font-sans">Object Flipping Platform</p>
+                           </div>
                         </div>
+                        <p class="text-slate-300 text-base">將物件進行180度翻轉，以利於攝影機對產品的正反兩面進行檢測。</p>
+                        <p class="text-sm text-slate-400 font-sans mt-1">Flips objects 180 degrees to allow cameras to inspect both the front and back sides of the product.</p>
                     </div>
-                    <div class="gradient-border p-1 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 h-full">
-                        <div class="module-card-inner bg-slate-100 p-6 rounded-lg text-slate-800 h-full">
-                            <h4 class="font-bold text-2xl">旋轉檢測平台</h4>
-                            <p class="text-slate-500 text-lg font-sans">Rotating Inspection Platform</p>
-                            <p class="text-slate-600 mt-2 text-lg">提供360度的全方位視角，專為需要無死角檢測的複雜曲面產品設計。</p>
-                            <p class="text-base text-slate-500 font-sans mt-1">Provides a 360-degree view, designed for products with complex surfaces that require inspection with no blind spots.</p>
+                     <!-- Card 4 -->
+                    <div class="card-glow bg-slate-800 p-6 rounded-xl hover:-translate-y-2 reveal" style="--glow-color: #60a5fa; --glow-color-faded: rgba(96, 165, 250, 0.3);">
+                        <div class="flex items-center gap-4 mb-4">
+                           <i data-lucide="scan-search" class="w-10 h-10 text-blue-400 flex-shrink-0"></i>
+                           <div>
+                                <h4 class="font-bold text-xl text-white">旋轉檢測平台</h4>
+                                <p class="text-slate-400 text-sm font-sans">Rotating Inspection Platform</p>
+                           </div>
                         </div>
+                        <p class="text-slate-300 text-base">提供360度的全方位視角，專為需要無死角檢測的複雜曲面產品設計。</p>
+                        <p class="text-sm text-slate-400 font-sans mt-1">Provides a 360-degree view, designed for products with complex surfaces that require inspection with no blind spots.</p>
                     </div>
-                    <div class="gradient-border p-1 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 h-full">
-                        <div class="module-card-inner bg-slate-100 p-6 rounded-lg text-slate-800 h-full">
-                            <h4 class="font-bold text-2xl">6軸手臂平台</h4>
-                            <p class="text-slate-500 text-lg font-sans">6-Axis Robotic Arm Platform</p>
-                            <p class="text-slate-600 mt-2 text-lg">模擬人手進行複雜的抓取、搬運與分類任務，是實現高度自動化的關鍵。</p>
-                            <p class="text-base text-slate-500 font-sans mt-1">Simulates a human hand to perform complex picking, placing, and sorting tasks, key to high-level automation.</p>
+                     <!-- Card 5 -->
+                    <div class="card-glow bg-slate-800 p-6 rounded-xl hover:-translate-y-2 reveal" style="--glow-color: #60a5fa; --glow-color-faded: rgba(96, 165, 250, 0.3); transition-delay: 100ms;">
+                        <div class="flex items-center gap-4 mb-4">
+                           <i data-lucide="bot" class="w-10 h-10 text-blue-400 flex-shrink-0"></i>
+                           <div>
+                                <h4 class="font-bold text-xl text-white">6軸手臂平台</h4>
+                                <p class="text-slate-400 text-sm font-sans">6-Axis Robotic Arm Platform</p>
+                           </div>
                         </div>
+                        <p class="text-slate-300 text-base">模擬人手進行複雜的抓取、搬運與分類任務，是實現高度自動化的關鍵。</p>
+                        <p class="text-sm text-slate-400 font-sans mt-1">Simulates a human hand to perform complex picking, placing, and sorting tasks, key to high-level automation.</p>
                     </div>
-                    <div class="gradient-border p-1 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 h-full">
-                        <div class="module-card-inner bg-slate-100 p-6 rounded-lg text-slate-800 h-full">
-                            <h4 class="font-bold text-2xl">靜態光學系統</h4>
-                            <p class="text-slate-500 text-lg font-sans">Static Optical System</p>
-                            <p class="text-slate-600 mt-2 text-lg">提供穩定、可控的光源與拍攝環境，確保影像品質，是訓練AI模型的理想平台。</p>
-                            <p class="text-base text-slate-500 font-sans mt-1">Offers a stable, controllable lighting and camera environment to ensure high-quality images for training AI models.</p>
+                     <!-- Card 6 -->
+                    <div class="card-glow bg-slate-800 p-6 rounded-xl hover:-translate-y-2 reveal" style="--glow-color: #60a5fa; --glow-color-faded: rgba(96, 165, 250, 0.3); transition-delay: 200ms;">
+                        <div class="flex items-center gap-4 mb-4">
+                           <i data-lucide="camera" class="w-10 h-10 text-blue-400 flex-shrink-0"></i>
+                           <div>
+                                <h4 class="font-bold text-xl text-white">靜態光學系統</h4>
+                                <p class="text-slate-400 text-sm font-sans">Static Optical System</p>
+                           </div>
                         </div>
+                        <p class="text-slate-300 text-base">提供穩定、可控的光源與拍攝環境，確保影像品質，是訓練AI模型的理想平台。</p>
+                        <p class="text-sm text-slate-400 font-sans mt-1">Offers a stable, controllable lighting and camera environment to ensure high-quality images for training AI models.</p>
                     </div>
                 </div>
             </div>
         </section>
         
         <section id="topic-selection" class="py-16 md:py-24">
-            <div class="container mx-auto px-6 text-center">
-                <span class="text-blue-400 font-semibold tracking-wider">本專案議題 | Our Project's Focus</span>
-                <h3 class="text-5xl md:text-6xl font-bold text-white mt-2 gradient-text">議題挑選：外觀瑕疵自動檢測</h3>
-                <p class="text-2xl text-slate-400 font-sans">Topic Selection: Automated Visual Defect Detection</p>
-                <div class="mt-8 max-w-4xl mx-auto text-left p-1 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
-                    <div class="bg-slate-100 p-8 rounded-lg text-slate-800">
-                        <h4 class="font-bold text-2xl text-slate-900"><span class="block text-xl font-normal text-slate-500 font-sans">Why This Topic?</span>為何選擇此議題？</h4>
-                        <p class="mt-3 text-xl text-slate-700">產品品質是製造業的核心，而外觀檢測是品質控管 (QC) 的第一道防線。我們選擇此議題，因其能直接解決關鍵的產業痛點，帶來最立即且顯著的效益。</p>
-                        <p class="mt-2 text-lg text-slate-500 font-sans">Product quality is the core of manufacturing, and visual inspection is the first line of defense in quality control (QC). We chose this topic because it directly tackles a critical industry pain point, offering the most immediate and significant benefits.</p>
-                        <div class="mt-6 pt-6 border-t border-slate-200">
-                            <h5 class="font-semibold text-xl text-slate-900"><span class="block text-lg font-normal text-slate-500 font-sans">Specific Use Cases</span>具體應用場景</h5>
-                            <ul class="mt-4 space-y-4 text-xl text-slate-700">
-                                <li class="flex items-start"><span class="text-purple-500 mr-4 mt-1 font-bold">✓</span><div><strong>電子業 (Electronics):</strong> 檢測電路板(PCB)上的焊點缺陷、元件錯位。<p class="text-base text-slate-500 font-sans mt-1">Detecting soldering defects or component misplacements on PCBs.</p></div></li>
-                                <li class="flex items-start"><span class="text-purple-500 mr-4 mt-1 font-bold">✓</span><div><strong>金屬加工 (Metalworking):</strong> 找出金屬零件表面的刮痕、凹陷或裂縫。<p class="text-base text-slate-500 font-sans mt-1">Finding scratches, dents, or cracks on the surface of metal parts.</p></div></li>
-                                <li class="flex items-start"><span class="text-purple-500 mr-4 mt-1 font-bold">✓</span><div><strong>紡織業 (Textiles):</strong> 辨識布料上的斷紗、色差或織造瑕疵。<p class="text-base text-slate-500 font-sans mt-1">Identifying broken threads, color variations, or weaving flaws in fabrics.</p></div></li>
-                                <li class="flex items-start"><span class="text-purple-500 mr-4 mt-1 font-bold">✓</span><div><strong>食品包裝 (Food & Packaging):</strong> 挑出食品中的異物或檢查包裝印刷錯誤。<p class="text-base text-slate-500 font-sans mt-1">Sorting out foreign objects or checking for printing errors on packaging.</p></div></li>
-                            </ul>
-                        </div>
+            <div class="container mx-auto px-6">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="reveal">
+                        <img src="https://placehold.co/600x400/0f172a/60a5fa?text=AI+Inspection" alt="AI inspecting a microchip" class="rounded-xl shadow-2xl shadow-slate-950/50">
+                    </div>
+                    <div class="reveal">
+                        <span class="text-blue-400 font-semibold tracking-wider">本專案議題 | Our Project's Focus</span>
+                        <h3 class="text-4xl md:text-5xl font-bold text-white mt-2"><span class="gradient-text">外觀瑕疵自動檢測</span></h3>
+                        <p class="text-xl text-slate-400 font-sans">Automated Visual Defect Detection</p>
+                        <p class="mt-4 text-lg text-slate-300">產品品質是製造業的核心，而外觀檢測是品質控管 (QC) 的第一道防線。我們選擇此議題，因其能直接解決關鍵的產業痛點，帶來最立即且顯著的效益。</p>
+                        <p class="mt-2 text-base text-slate-400 font-sans">Product quality is the core of manufacturing, and visual inspection is the first line of defense in quality control (QC). We chose this topic because it directly tackles a critical industry pain point, offering the most immediate and significant benefits.</p>
+                         <div class="mt-6 pt-6 border-t border-slate-700/50 space-y-4">
+                             <div class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0"></i><div><strong class="text-white">電子業 (Electronics):</strong> 檢測電路板(PCB)上的焊點缺陷、元件錯位。<p class="text-sm text-slate-400 font-sans">Detecting soldering defects or component misplacements on PCBs.</p></div></div>
+                             <div class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0"></i><div><strong class="text-white">金屬加工 (Metalworking):</strong> 找出金屬零件表面的刮痕、凹陷或裂縫。<p class="text-sm text-slate-400 font-sans">Finding scratches, dents, or cracks on the surface of metal parts.</p></div></div>
+                             <div class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0"></i><div><strong class="text-white">紡織業 (Textiles):</strong> 辨識布料上的斷紗、色差或織造瑕疵。<p class="text-sm text-slate-400 font-sans">Identifying broken threads, color variations, or weaving flaws in fabrics.</p></div></div>
+                             <div class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0"></i><div><strong class="text-white">食品包裝 (Food & Packaging):</strong> 挑出食品中的異物或檢查包裝印刷錯誤。<p class="text-sm text-slate-400 font-sans">Sorting out foreign objects or checking for printing errors on packaging.</p></div></div>
+                         </div>
                     </div>
                 </div>
             </div>
@@ -181,203 +242,205 @@
 
         <section id="challenge" class="py-16 md:py-24">
             <div class="container mx-auto px-6">
-                <div class="text-center mb-16">
-                    <h3 class="text-5xl md:text-6xl font-bold text-white gradient-text">挑戰與目標：從人工到智慧的跨越</h3>
-                    <p class="text-2xl text-slate-400 font-sans mt-2">The Challenge & Goal: A Leap from Manual to Smart</p>
-                    <p class="mt-4 text-xl text-slate-300 max-w-4xl mx-auto">傳統人工檢測面臨效率、準確度與成本的巨大挑戰。我們的目標是利用AI技術，建立一個更高效、更可靠的自動化品質控管系統。</p>
-                     <p class="text-lg text-slate-400 max-w-4xl mx-auto mt-2 font-sans">Traditional manual inspection faces significant challenges in efficiency, accuracy, and cost. Our goal is to leverage AI to build a more efficient and reliable automated quality control system.</p>
+                <div class="text-center mb-16 reveal">
+                    <h3 class="text-4xl md:text-5xl font-bold text-white"><span class="gradient-text">挑戰與目標：從人工到智慧的跨越</span></h3>
+                    <p class="text-xl text-slate-400 font-sans mt-2">The Challenge & Goal: A Leap from Manual to Smart</p>
+                    <p class="mt-4 text-lg text-slate-300 max-w-3xl mx-auto">傳統人工檢測面臨效率、準確度與成本的巨大挑戰。我們的目標是利用AI技術，建立一個更高效、更可靠的自動化品質控管系統。</p>
+                    <p class="text-base text-slate-400 max-w-3xl mx-auto mt-2 font-sans">Traditional manual inspection faces significant challenges in efficiency, accuracy, and cost. Our goal is to leverage AI to build a more efficient and reliable automated quality control system.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch mb-16">
-                     <div class="p-1 rounded-xl bg-gradient-to-br from-red-500 to-orange-400 h-full">
-                        <div class="bg-slate-100 p-8 rounded-lg text-slate-800 h-full">
-                            <h4 class="font-bold text-4xl text-red-600 mb-6 text-center">傳統人工檢測痛點<span class="block font-semibold text-red-500 text-xl font-sans mt-1">Pain Points of Manual Inspection</span></h4>
-                            <ul class="space-y-4 text-xl">
-                                <li class="flex items-start"><span class="text-red-500 text-3xl mr-3 mt-0.5">✗</span><div><strong class="text-slate-900">效率低下：</strong>檢查速度有限，易成產能瓶頸。<p class="text-lg text-slate-500 font-sans">Low Efficiency: Limited inspection speed becomes a production bottleneck.</p></div></li>
-                                <li class="flex items-start"><span class="text-red-500 text-3xl mr-3 mt-0.5">✗</span><div><strong class="text-slate-900">錯誤率高：</strong>受人員生理、心理狀態影響，標準不一。<p class="text-lg text-slate-500 font-sans">High Error Rate: Inconsistent standards due to human factors like fatigue.</p></div></li>
-                                <li class="flex items-start"><span class="text-red-500 text-3xl mr-3 mt-0.5">✗</span><div><strong class="text-slate-900">成本高昂：</strong>需投入大量人力、訓練與管理成本。<p class="text-lg text-slate-500 font-sans">High Cost: Requires significant investment in labor, training, and management.</p></div></li>
-                                <li class="flex items-start"><span class="text-red-500 text-3xl mr-3 mt-0.5">✗</span><div><strong class="text-slate-900">無法全檢：</strong>多採抽檢，存在品質風險。<p class="text-lg text-slate-500 font-sans">Inability for 100% Inspection: Relies on sample checks, posing quality risks.</p></div></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="p-1 rounded-xl bg-gradient-to-br from-green-400 to-cyan-400 h-full">
-                        <div class="bg-slate-100 p-8 rounded-lg text-slate-800 h-full">
-                            <h4 class="font-bold text-4xl text-green-600 mb-6 text-center">導入AI解決方案目標<span class="block font-semibold text-green-500 text-xl font-sans mt-1">Goals of the AI Solution</span></h4>
-                            <ul class="space-y-4 text-xl">
-                                <li class="flex items-start"><span class="text-green-500 text-3xl mr-3 mt-0.5">✓</span><div><strong class="text-slate-900">提高檢測速度：</strong>實現遠超人力的即時高速檢測。<p class="text-lg text-slate-500 font-sans">Increase Speed: Achieve real-time, high-speed inspection far exceeding human capabilities.</p></div></li>
-                                <li class="flex items-start"><span class="text-green-500 text-3xl mr-3 mt-0.5">✓</span><div><strong class="text-slate-900">提高準確率：</strong>維持穩定客觀標準，準確率達99%以上。<p class="text-lg text-slate-500 font-sans">Improve Accuracy: Maintain stable, objective standards with over 99% accuracy.</p></div></li>
-                                <li class="flex items-start"><span class="text-green-500 text-3xl mr-3 mt-0.5">✓</span><div><strong class="text-slate-900">降低生產成本：</strong>顯著降低對人工的依賴。<p class="text-lg text-slate-500 font-sans">Reduce Cost: Significantly decrease reliance on manual labor.</p></div></li>
-                                <li class="flex items-start"><span class="text-green-500 text-3xl mr-3 mt-0.5">✓</span><div><strong class="text-slate-900">實現數據化品管：</strong>記錄瑕疵數據，作為優化生產依據。<p class="text-lg text-slate-500 font-sans">Enable Data-driven QC: Collect defect data to optimize production processes.</p></div></li>
-                            </ul>
-                        </div>
-                    </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch mb-16">
+                     <div class="card-glow bg-slate-800/50 p-8 rounded-xl reveal" style="--glow-color: #ef4444; --glow-color-faded: rgba(239, 68, 68, 0.3);">
+                         <h4 class="font-bold text-2xl text-red-400 mb-6 flex items-center gap-3"><i data-lucide="x-circle" class="w-8 h-8"></i>傳統人工檢測痛點</h4>
+                         <ul class="space-y-4 text-slate-300">
+                             <li class="flex items-start gap-3"><span class="text-red-400 font-bold text-2xl mt-1">✗</span><div><strong class="text-white">效率低下：</strong>檢查速度有限，易成產能瓶頸。<p class="text-sm text-slate-400 font-sans">Low Efficiency: Limited inspection speed becomes a production bottleneck.</p></div></li>
+                             <li class="flex items-start gap-3"><span class="text-red-400 font-bold text-2xl mt-1">✗</span><div><strong class="text-white">錯誤率高：</strong>受人員生理、心理狀態影響，標準不一。<p class="text-sm text-slate-400 font-sans">High Error Rate: Inconsistent standards due to human factors like fatigue.</p></div></li>
+                             <li class="flex items-start gap-3"><span class="text-red-400 font-bold text-2xl mt-1">✗</span><div><strong class="text-white">成本高昂：</strong>需投入大量人力、訓練與管理成本。<p class="text-sm text-slate-400 font-sans">High Cost: Requires significant investment in labor, training, and management.</p></div></li>
+                             <li class="flex items-start gap-3"><span class="text-red-400 font-bold text-2xl mt-1">✗</span><div><strong class="text-white">無法全檢：</strong>多採抽檢，存在品質風險。<p class="text-sm text-slate-400 font-sans">Inability for 100% Inspection: Relies on sample checks, posing quality risks.</p></div></li>
+                         </ul>
+                     </div>
+                     <div class="card-glow bg-slate-800/50 p-8 rounded-xl reveal" style="--glow-color: #22c55e; --glow-color-faded: rgba(34, 197, 94, 0.3);">
+                         <h4 class="font-bold text-2xl text-green-400 mb-6 flex items-center gap-3"><i data-lucide="check-circle" class="w-8 h-8"></i>導入AI解決方案目標</h4>
+                         <ul class="space-y-4 text-slate-300">
+                             <li class="flex items-start gap-3"><span class="text-green-400 font-bold text-2xl mt-1">✓</span><div><strong class="text-white">提高檢測速度：</strong>實現遠超人力的即時高速檢測。<p class="text-sm text-slate-400 font-sans">Increase Speed: Achieve real-time, high-speed inspection far exceeding human capabilities.</p></div></li>
+                             <li class="flex items-start gap-3"><span class="text-green-400 font-bold text-2xl mt-1">✓</span><div><strong class="text-white">提高準確率：</strong>維持穩定客觀標準，準確率達99%以上。<p class="text-sm text-slate-400 font-sans">Improve Accuracy: Maintain stable, objective standards with over 99% accuracy.</p></div></li>
+                             <li class="flex items-start gap-3"><span class="text-green-400 font-bold text-2xl mt-1">✓</span><div><strong class="text-white">降低生產成本：</strong>顯著降低對人工的依賴。<p class="text-sm text-slate-400 font-sans">Reduce Cost: Significantly decrease reliance on manual labor.</p></div></li>
+                             <li class="flex items-start gap-3"><span class="text-green-400 font-bold text-2xl mt-1">✓</span><div><strong class="text-white">實現數據化品管：</strong>記錄瑕疵數據，作為優化生產依據。<p class="text-sm text-slate-400 font-sans">Enable Data-driven QC: Collect defect data to optimize production processes.</p></div></li>
+                         </ul>
+                     </div>
                 </div>
                 
-                <div class="p-1 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
-                    <div class="bg-slate-100 p-6 rounded-lg">
-                        <div class="chart-container">
-                            <canvas id="comparisonChart"></canvas>
-                        </div>
-                        <div class="text-center mt-4">
-                            <p class="text-base text-slate-500">*資料來源：綜合業界報告與案例研究之估算值，旨在說明效益差異。<br>(Source: Estimated values based on industry reports and case studies to illustrate performance differences.)</p>
-                        </div>
+                <div class="bg-slate-100 p-6 rounded-lg reveal">
+                    <div class="chart-container">
+                        <canvas id="comparisonChart"></canvas>
                     </div>
                 </div>
-
             </div>
         </section>
 
         <section id="solution" class="py-16 md:py-24">
              <div class="container mx-auto px-6">
-                <div class="text-center mb-16">
-                    <h3 class="text-5xl md:text-6xl font-bold text-white gradient-text">我們的AI解決方案</h3>
-                    <p class="text-2xl text-slate-400 font-sans mt-2">Our AI Solution</p>
-                    <p class="mt-4 text-xl text-slate-300 max-w-4xl mx-auto">我們選擇了業界領先且成熟的技術組合，以確保系統的性能、穩定性與未來的擴展性。</p>
-                     <p class="text-lg text-slate-400 max-w-4xl mx-auto mt-2 font-sans">We have selected a combination of industry-leading, mature technologies to ensure system performance, stability, and future scalability.</p>
+                <div class="text-center mb-16 reveal">
+                    <h3 class="text-4xl md:text-5xl font-bold text-white"><span class="gradient-text">我們的AI解決方案</span></h3>
+                    <p class="text-xl text-slate-400 font-sans mt-2">Our AI Solution</p>
+                    <p class="mt-4 text-lg text-slate-300 max-w-3xl mx-auto">我們選擇了業界領先且成熟的技術組合，以確保系統的性能、穩定性與未來的擴展性。</p>
+                    <p class="text-base text-slate-400 max-w-3xl mx-auto mt-2 font-sans">We have selected a combination of industry-leading, mature technologies to ensure system performance, stability, and future scalability.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                     <div class="p-1 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-center h-full">
-                        <div class="bg-slate-100 p-8 rounded-lg text-slate-800 h-full flex flex-col">
-                            <div class="text-7xl mb-4 flex-shrink-0">🎯</div>
-                            <div class="flex-grow">
-                                <h4 class="font-bold text-3xl mb-2 text-slate-900">深度學習: YOLO</h4>
-                                <p class="text-slate-500 text-lg font-sans">Deep Learning: YOLO</p>
-                                <p class="text-slate-600 mt-4 text-lg"><strong>選擇理由：</strong>兼具速度與準確率，能實現即時偵測，完美契合產線需求。</p>
-                                <p class="text-base text-slate-500 font-sans mt-1"><strong>Reason:</strong> Balances speed and accuracy for real-time detection, perfectly fitting production line needs.</p>
-                            </div>
+                     <div class="card-glow bg-slate-800 p-8 rounded-xl text-center reveal" style="--glow-color: #6366f1; --glow-color-faded: rgba(99, 102, 241, 0.3);">
+                        <div class="w-20 h-20 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-indigo-400">
+                             <i data-lucide="target" class="w-10 h-10 text-indigo-300"></i>
                         </div>
-                    </div>
-                     <div class="p-1 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-center h-full">
-                        <div class="bg-slate-100 p-8 rounded-lg text-slate-800 h-full flex flex-col">
-                            <div class="text-7xl mb-4 flex-shrink-0">🖼️</div>
-                            <div class="flex-grow">
-                                <h4 class="font-bold text-3xl mb-2 text-slate-900">影像處理: OpenCV</h4>
-                                <p class="text-slate-500 text-lg font-sans">Image Processing: OpenCV</p>
-                                <p class="text-slate-600 mt-4 text-lg"><strong>選擇理由：</strong>功能強大且為業界標準，能確保影像品質，最大化模型效能。</p>
-                                <p class="text-base text-slate-500 font-sans mt-1"><strong>Reason:</strong> Powerful and the industry standard, ensuring optimal image quality to maximize model performance.</p>
-                            </div>
+                        <h4 class="font-bold text-2xl mb-1 text-white">深度學習: YOLO</h4>
+                        <p class="text-slate-400 text-sm font-sans">Deep Learning</p>
+                        <p class="text-slate-300 mt-4 text-base"><strong>選擇理由：</strong>兼具速度與準確率，能實現即時偵測，完美契合產線需求。</p>
+                        <p class="text-sm text-slate-400 font-sans mt-1"><strong>Reason:</strong> Balances speed and accuracy for real-time detection, perfectly fitting production line needs.</p>
+                     </div>
+                     <div class="card-glow bg-slate-800 p-8 rounded-xl text-center reveal" style="transition-delay: 100ms; --glow-color: #a855f7; --glow-color-faded: rgba(168, 85, 247, 0.3);">
+                         <div class="w-20 h-20 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-purple-400">
+                             <i data-lucide="image" class="w-10 h-10 text-purple-300"></i>
                         </div>
-                    </div>
-                    <div class="p-1 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-center h-full">
-                        <div class="bg-slate-100 p-8 rounded-lg text-slate-800 h-full flex flex-col">
-                            <div class="text-7xl mb-4 flex-shrink-0">💻</div>
-                            <div class="flex-grow">
-                                <h4 class="font-bold text-3xl mb-2 text-slate-900">邊緣運算: NVIDIA Jetson</h4>
-                                <p class="text-slate-500 text-lg font-sans">Edge Computing: NVIDIA Jetson</p>
-                                <p class="text-slate-600 mt-4 text-lg"><strong>選擇理由：</strong>低延遲的邊緣運算確保即時反應，且易於整合、數據安全性高。</p>
-                                <p class="text-base text-slate-500 font-sans mt-1"><strong>Reason:</strong> Low-latency edge computing ensures real-time response, easy integration, and high data security.</p>
-                            </div>
+                         <h4 class="font-bold text-2xl mb-1 text-white">影像處理: OpenCV</h4>
+                         <p class="text-slate-400 text-sm font-sans">Image Processing</p>
+                         <p class="text-slate-300 mt-4 text-base"><strong>選擇理由：</strong>功能強大且為業界標準，能確保影像品質，最大化模型效能。</p>
+                         <p class="text-sm text-slate-400 font-sans mt-1"><strong>Reason:</strong> Powerful and the industry standard, ensuring optimal image quality to maximize model performance.</p>
+                     </div>
+                     <div class="card-glow bg-slate-800 p-8 rounded-xl text-center reveal" style="transition-delay: 200ms; --glow-color: #ec4899; --glow-color-faded: rgba(236, 72, 153, 0.3);">
+                         <div class="w-20 h-20 bg-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-pink-400">
+                             <i data-lucide="cpu" class="w-10 h-10 text-pink-300"></i>
                         </div>
-                    </div>
+                         <h4 class="font-bold text-2xl mb-1 text-white">邊緣運算: NVIDIA Jetson</h4>
+                         <p class="text-slate-400 text-sm font-sans">Edge Computing</p>
+                         <p class="text-slate-300 mt-4 text-base"><strong>選擇理由：</strong>低延遲的邊緣運算確保即時反應，且易於整合、數據安全性高。</p>
+                         <p class="text-sm text-slate-400 font-sans mt-1"><strong>Reason:</strong> Low-latency edge computing ensures real-time response, easy integration, and high data security.</p>
+                     </div>
                 </div>
             </div>
         </section>
 
         <section id="workflow" class="py-16 md:py-24">
             <div class="container mx-auto px-6">
-                <div class="text-center mb-12">
-                    <h3 class="text-5xl md:text-6xl font-bold text-white gradient-text">AI-Powered Automated Optical Inspection (AOI) Workflow</h3>
-                    <p class="mt-4 text-xl text-slate-300 max-w-4xl mx-auto">為克服人工檢測的限制，我們開發了一套高速自動化的AOI系統。</p>
-                    <p class="text-lg text-slate-400 max-w-4xl mx-auto mt-2 font-sans">To overcome the limitations of manual inspection, we developed a high-speed, automated AOI system.</p>
+                <div class="text-center mb-16 reveal">
+                    <h3 class="text-4xl md:text-5xl font-bold text-white"><span class="gradient-text">AI-Powered AOI Workflow</span></h3>
+                    <p class="mt-4 text-lg text-slate-300 max-w-3xl mx-auto">為克服人工檢測的限制，我們開發了一套高速自動化的AOI系統。</p>
+                    <p class="text-base text-slate-400 max-w-3xl mx-auto mt-2 font-sans">To overcome the limitations of manual inspection, we developed a high-speed, automated AOI system.</p>
                 </div>
-                <div class="relative flex flex-col md:flex-row justify-center items-center gap-8 md:gap-0">
-                    <div class="absolute top-1/2 left-0 h-1 w-full bg-slate-700 hidden md:block z-0"></div>
-                     <div class="workflow-step text-center p-4 z-10 max-w-xs">
-                        <div class="step-icon text-6xl text-white bg-slate-800 rounded-full w-28 h-28 flex items-center justify-center mx-auto mb-4 border-4 border-blue-500/50">📦</div>
-                        <h5 class="font-bold text-2xl text-white">產品進站<span class="block text-lg font-normal text-slate-400 font-sans">Product Entry</span></h5>
-                        <p class="text-lg text-slate-300 mt-2">產品進入旋轉檢測平台。</p>
-                        <p class="text-base text-slate-400 font-sans mt-1">Products enter via the rotating inspection platform.</p>
-                    </div>
-                    <div class="hidden md:block text-slate-600 text-6xl mx-8 z-10">→</div>
-                    <div class="md:hidden text-slate-600 text-6xl my-4">↓</div>
-                    <div class="workflow-step text-center p-4 z-10 max-w-xs">
-                        <div class="step-icon text-6xl text-white bg-slate-800 rounded-full w-28 h-28 flex items-center justify-center mx-auto mb-4 border-4 border-blue-500/50">📷</div>
-                        <h5 class="font-bold text-2xl text-white">影像擷取<span class="block text-lg font-normal text-slate-400 font-sans">Image Capture</span></h5>
-                        <p class="text-lg text-slate-300 mt-2">5MP工業相機搭配同軸光源，擷取高清、無眩光的影像以確保特徵清晰。</p>
-                        <p class="text-base text-slate-400 font-sans mt-1">5MP industrial cameras with co-axial lighting capture high-definition, glare-free images to ensure feature clarity.</p>
-                    </div>
-                    <div class="hidden md:block text-slate-600 text-6xl mx-8 z-10">→</div>
-                    <div class="md:hidden text-slate-600 text-6xl my-4">↓</div>
-                    <div class="workflow-step text-center p-4 z-10 max-w-xs">
-                        <div class="step-icon text-6xl text-white bg-slate-800 rounded-full w-28 h-28 flex items-center justify-center mx-auto mb-4 border-4 border-blue-500/50">🧠</div>
-                        <h5 class="font-bold text-2xl text-white">AI辨識<span class="block text-lg font-normal text-slate-400 font-sans">AI Detection</span></h5>
-                        <p class="text-lg text-slate-300 mt-2">Jetson Orin Nano運行客製化訓練的YOLOv8n模型，瑕疵檢測mAP達99.2%，推論時間15ms。</p>
-                        <p class="text-base text-slate-400 font-sans mt-1">A Jetson Orin Nano runs a custom-trained YOLOv8n model, achieving 99.2% mAP for defect detection with an inference time of 15ms.</p>
-                    </div>
-                    <div class="hidden md:block text-slate-600 text-6xl mx-8 z-10">→</div>
-                    <div class="md:hidden text-slate-600 text-6xl my-4">↓</div>
-                    <div class="workflow-step text-center p-4 z-10 max-w-xs">
-                         <div class="step-icon text-6xl text-white bg-slate-800 rounded-full w-28 h-28 flex items-center justify-center mx-auto mb-4 border-4 border-blue-500/50">🦾</div>
-                        <h5 class="font-bold text-2xl text-white">自動分類<span class="block text-lg font-normal text-slate-400 font-sans">Automated Sorting</span></h5>
-                        <p class="text-lg text-slate-300 mt-2">系統透過TCP/IP向PLC發出信號，控制六軸手臂對NG品進行分類。</p>
-                        <p class="text-base text-slate-400 font-sans mt-1">The system signals a PLC via TCP/IP, controlling a 6-axis arm to sort NG (No-Good) products.</p>
-                    </div>
-                </div>
-                 <div class="mt-16 max-w-3xl mx-auto p-1 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
-                    <div class="bg-slate-100 p-6 rounded-lg text-slate-800">
-                        <h4 class="font-bold text-3xl text-center text-slate-900 mb-4">系統性能 | System Performance</h4>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                            <div>
-                                <p class="text-4xl font-bold text-green-600">99.2%</p>
-                                <p class="text-lg text-slate-500">檢測準確率<span class="block text-base">Detection Accuracy</span></p>
-                            </div>
-                            <div>
-                                <p class="text-4xl font-bold text-blue-600">1.2s</p>
-                                <p class="text-lg text-slate-500">單件週期時間<span class="block text-base">Cycle Time / Product</span></p>
-                            </div>
-                            <div>
-                                <p class="text-4xl font-bold text-purple-600">85%</p>
-                                <p class="text-lg text-slate-500">檢測時間縮短<span class="block text-base">Reduction in Inspection Time</span></p>
-                            </div>
+                <div class="relative">
+                    <!-- The connecting line -->
+                    <div class="absolute left-1/2 top-12 bottom-12 w-0.5 bg-slate-700 hidden md:block"></div>
+                    <!-- Workflow Steps -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
+                        <!-- Step 1 -->
+                        <div class="flex items-center gap-6 reveal">
+                             <div class="workflow-icon-glow flex-shrink-0 w-24 h-24 rounded-full bg-slate-800 flex items-center justify-center border-2 border-blue-500/50 text-blue-400">
+                                 <i data-lucide="box" class="w-12 h-12"></i>
+                             </div>
+                             <div>
+                                 <h5 class="font-bold text-xl text-white">產品進站 (Product Entry)</h5>
+                                 <p class="text-slate-300 mt-1">產品進入旋轉檢測平台。</p>
+                                 <p class="text-sm text-slate-400 font-sans mt-1">Products enter via the rotating inspection platform.</p>
+                             </div>
+                        </div>
+                        <div class="hidden md:block"></div> <!-- Spacer -->
+                        <!-- Step 2 -->
+                        <div class="hidden md:block"></div> <!-- Spacer -->
+                        <div class="flex items-center gap-6 md:flex-row-reverse md:text-right reveal">
+                             <div class="workflow-icon-glow flex-shrink-0 w-24 h-24 rounded-full bg-slate-800 flex items-center justify-center border-2 border-blue-500/50 text-blue-400">
+                                 <i data-lucide="camera" class="w-12 h-12"></i>
+                             </div>
+                             <div>
+                                 <h5 class="font-bold text-xl text-white">影像擷取 (Image Capture)</h5>
+                                 <p class="text-slate-300 mt-1">5MP工業相機搭配同軸光源，擷取高清、無眩光的影像以確保特徵清晰。</p>
+                                 <p class="text-sm text-slate-400 font-sans mt-1">5MP industrial cameras with co-axial lighting capture high-definition, glare-free images to ensure feature clarity.</p>
+                             </div>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="flex items-center gap-6 reveal">
+                             <div class="workflow-icon-glow flex-shrink-0 w-24 h-24 rounded-full bg-slate-800 flex items-center justify-center border-2 border-blue-500/50 text-blue-400">
+                                 <i data-lucide="brain-circuit" class="w-12 h-12"></i>
+                             </div>
+                             <div>
+                                 <h5 class="font-bold text-xl text-white">AI辨識 (AI Detection)</h5>
+                                 <p class="text-slate-300 mt-1">Jetson Orin Nano運行客製化訓練的YOLOv8n模型，瑕疵檢測mAP達99.2%，推論時間15ms。</p>
+                                 <p class="text-sm text-slate-400 font-sans mt-1">A Jetson Orin Nano runs a custom-trained YOLOv8n model, achieving 99.2% mAP for defect detection with an inference time of 15ms.</p>
+                             </div>
+                        </div>
+                        <div class="hidden md:block"></div> <!-- Spacer -->
+                         <!-- Step 4 -->
+                        <div class="hidden md:block"></div> <!-- Spacer -->
+                        <div class="flex items-center gap-6 md:flex-row-reverse md:text-right reveal">
+                             <div class="workflow-icon-glow flex-shrink-0 w-24 h-24 rounded-full bg-slate-800 flex items-center justify-center border-2 border-blue-500/50 text-blue-400">
+                                 <i data-lucide="bot" class="w-12 h-12"></i>
+                             </div>
+                             <div>
+                                 <h5 class="font-bold text-xl text-white">自動分類 (Automated Sorting)</h5>
+                                 <p class="text-slate-300 mt-1">系統透過TCP/IP向PLC發出信號，控制六軸手臂對NG品進行分類。</p>
+                                 <p class="text-sm text-slate-400 font-sans mt-1">The system signals a PLC via TCP/IP, controlling a 6-axis arm to sort NG (No-Good) products.</p>
+                             </div>
                         </div>
                     </div>
                 </div>
+                 <div class="mt-20 max-w-3xl mx-auto bg-slate-800/50 p-6 rounded-xl border border-slate-700 reveal">
+                    <h4 class="font-bold text-2xl text-center text-white mb-4">系統性能 | System Performance</h4>
+                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                         <div>
+                             <p class="text-4xl font-bold text-green-400">99.2%</p>
+                             <p class="text-base text-slate-400">檢測準確率<span class="block text-sm">Detection Accuracy</span></p>
+                         </div>
+                         <div>
+                             <p class="text-4xl font-bold text-blue-400">1.2s</p>
+                             <p class="text-base text-slate-400">單件週期時間<span class="block text-sm">Cycle Time / Product</span></p>
+                         </div>
+                         <div>
+                             <p class="text-4xl font-bold text-purple-400">85%</p>
+                             <p class="text-base text-slate-400">檢測時間縮短<span class="block text-sm">Reduction in Time</span></p>
+                         </div>
+                     </div>
+                 </div>
             </div>
         </section>
         
         <section id="references" class="py-16 md:py-24">
             <div class="container mx-auto px-6">
-                <div class="text-center mb-12">
-                    <h3 class="text-5xl md:text-6xl font-bold text-white gradient-text">參考資料</h3>
-                    <p class="text-2xl text-slate-400 font-sans mt-2">References</p>
+                <div class="text-center mb-12 reveal">
+                    <h3 class="text-4xl md:text-5xl font-bold text-white"><span class="gradient-text">參考資料</span></h3>
+                    <p class="text-xl text-slate-400 font-sans mt-2">References</p>
                 </div>
-                <div class="max-w-4xl mx-auto p-1 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
-                    <div class="bg-slate-100 p-8 rounded-lg text-slate-600 text-lg">
-                        <ul class="space-y-6">
-                            <li>
-                                <strong class="text-slate-900 text-xl">G112類產線硬體模組資訊：</strong>
-                                <p class="font-sans text-slate-500">G112 Production Line Hardware Module Information:</p>
-                                <p class="mt-1 pl-4">南臺科技大學 AIoT智慧製造研發中心現場展示看板。 (STUST AIoT Smart Manufacturing R&D Center on-site display boards). (Photos provided by user).</p>
-                            </li>
-                            <li>
-                                <strong class="text-slate-900 text-xl">圖表數據來源：</strong>
-                                <p class="font-sans text-slate-500">Chart Data Source:</p>
-                                <p class="mt-1 pl-4">圖表數據為綜合業界報告與案例研究之估算值。參考來源包含：<br>The chart data represents estimated values based on a synthesis of industry reports and case studies. Sources include:</p>
-                                <ul class="list-disc list-inside mt-2 pl-6 space-y-1">
-                                    <li>McKinsey & Company. (2022). "The state of AI in 2022, and a half decade in review."</li>
-                                    <li>Boston Consulting Group (BCG). (2023). "AI in Manufacturing: The Quality Imperative."</li>
-                                    <li>Gartner. (2023). "Hype Cycle for Manufacturing Operations Strategy."</li>
-                                </ul>
-                            </li>
-                            <li>
-                                <strong class="text-slate-900 text-xl">深度學習模型 (YOLO)：</strong>
-                                <p class="font-sans text-slate-500">Deep Learning Model (YOLO):</p>
-                                <ul class="list-disc list-inside mt-2 pl-6 space-y-1">
-                                    <li>Redmon, J., et al. (2016). "You Only Look Once: Unified, Real-Time Object Detection." *CVPR 2016*.</li>
-                                    <li>Official YOLOv8 Documentation by Ultralytics.</li>
-                                </ul>
-                            </li>
-                             <li>
-                                <strong class="text-slate-900 text-xl">影像處理函式庫 (OpenCV)：</strong>
-                                <p class="font-sans text-slate-500">Image Processing Library (OpenCV):</p>
-                                 <p class="mt-1 pl-4">Open Source Computer Vision Library. Official Website.</p>
-                            </li>
-                            <li>
-                                <strong class="text-slate-900 text-xl">邊緣運算平台 (NVIDIA Jetson)：</strong>
-                                <p class="font-sans text-slate-500">Edge Computing Platform (NVIDIA Jetson):</p>
-                                 <p class="mt-1 pl-4">NVIDIA Jetson Developer Kits. Official Website.</p>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="max-w-4xl mx-auto bg-slate-100 p-8 rounded-lg text-slate-600 text-base reveal">
+                    <ul class="space-y-6">
+                        <li>
+                            <strong class="text-slate-900 text-lg">G112類產線硬體模組資訊：</strong>
+                            <p class="font-sans text-slate-500 text-sm">G112 Production Line Hardware Module Information:</p>
+                            <p class="mt-1">南臺科技大學 AIoT智慧製造研發中心現場展示看板。 (STUST AIoT Smart Manufacturing R&D Center on-site display boards). (Photos provided by user).</p>
+                        </li>
+                        <li>
+                            <strong class="text-slate-900 text-lg">圖表數據來源：</strong>
+                            <p class="font-sans text-slate-500 text-sm">Chart Data Source:</p>
+                            <p class="mt-1">圖表數據為綜合業界報告與案例研究之估算值。參考來源包含：<br>The chart data represents estimated values based on a synthesis of industry reports and case studies. Sources include:</p>
+                            <ul class="list-disc list-inside mt-2 pl-4 space-y-1 text-sm">
+                                <li>McKinsey & Company. (2022). "The state of AI in 2022, and a half decade in review."</li>
+                                <li>Boston Consulting Group (BCG). (2023). "AI in Manufacturing: The Quality Imperative."</li>
+                                <li>Gartner. (2023). "Hype Cycle for Manufacturing Operations Strategy."</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong class="text-slate-900 text-lg">深度學習模型 (YOLO)：</strong>
+                            <p class="font-sans text-slate-500 text-sm">Deep Learning Model (YOLO):</p>
+                            <ul class="list-disc list-inside mt-2 pl-4 space-y-1 text-sm">
+                                <li>Redmon, J., et al. (2016). "You Only Look Once: Unified, Real-Time Object Detection." *CVPR 2016*.</li>
+                                <li>Official YOLOv8 Documentation by Ultralytics.</li>
+                            </ul>
+                        </li>
+                         <li>
+                            <strong class="text-slate-900 text-lg">影像處理函式庫 (OpenCV)：</strong>
+                            <p class="font-sans text-slate-500 text-sm">Image Processing Library (OpenCV):</p>
+                            <p class="mt-1 pl-4">Open Source Computer Vision Library. Official Website.</p>
+                        </li>
+                        <li>
+                            <strong class="text-slate-900 text-lg">邊緣運算平台 (NVIDIA Jetson)：</strong>
+                            <p class="font-sans text-slate-500 text-sm">Edge Computing Platform (NVIDIA Jetson):</p>
+                            <p class="mt-1 pl-4">NVIDIA Jetson Developer Kits. Official Website.</p>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </section>
@@ -385,13 +448,17 @@
 
     <footer class="bg-slate-900 border-t border-slate-800">
         <div class="container mx-auto px-6 py-8 text-center text-slate-400">
-            <p class="text-xl">G112類產線AI導入專案報告 | G112 Production Line AI Project Report</p>
-            <p class="text-lg mt-2">南臺科技大學 AIoT智慧製造研發中心 | STUST AIoT Smart Manufacturing R&D Center</p>
+            <p class="text-lg">G112類產線AI導入專案報告 | G112 Production Line AI Project Report</p>
+            <p class="text-base mt-2">南臺科技大學 AIoT智慧製造研發中心 | STUST AIoT Smart Manufacturing R&D Center</p>
         </div>
     </footer>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Lucide Icons ---
+            lucide.createIcons();
+
+            // --- Smooth Scrolling for Nav Links ---
             const navLinks = document.querySelectorAll('nav a');
             navLinks.forEach(link => {
                 link.addEventListener('click', e => {
@@ -405,14 +472,29 @@
                             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
                             
                             window.scrollTo({
-                                 top: offsetPosition,
-                                 behavior: "smooth"
+                                top: offsetPosition,
+                                behavior: "smooth"
                             });
                         }
                     }
                 });
             });
 
+            // --- Scroll Animations ---
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            revealElements.forEach(el => {
+                revealObserver.observe(el);
+            });
+
+            // --- Chart.js Implementation ---
             const ctx = document.getElementById('comparisonChart').getContext('2d');
             const comparisonChart = new Chart(ctx, {
                 type: 'bar',
@@ -427,17 +509,17 @@
                         {
                             label: '傳統人工檢測 (Manual Inspection)',
                             data: [30, 85, 20, 80],
-                            backgroundColor: 'rgba(239, 68, 68, 0.7)',
-                            borderColor: 'rgba(248, 113, 113, 1)',
-                            borderWidth: 2,
+                            backgroundColor: 'rgba(239, 68, 68, 0.6)',
+                            borderColor: 'rgba(239, 68, 68, 1)',
+                            borderWidth: 1.5,
                             borderRadius: 5,
                         },
                         {
                             label: 'AI自動檢測 (AI Inspection)',
                             data: [150, 99.5, 100, 30],
-                            backgroundColor: 'rgba(34, 197, 94, 0.7)',
-                            borderColor: 'rgba(74, 222, 128, 1)',
-                            borderWidth: 2,
+                            backgroundColor: 'rgba(34, 197, 94, 0.6)',
+                            borderColor: 'rgba(34, 197, 94, 1)',
+                            borderWidth: 1.5,
                             borderRadius: 5,
                         }
                     ]
@@ -449,27 +531,15 @@
                         title: {
                             display: true,
                             text: '人工檢測 vs AI自動檢測 效能比較 (Manual vs. AI Performance)',
-                            font: {
-                                size: 20,
-                                family: "'Noto Sans TC', 'Poppins', sans-serif",
-                                weight: 'bold',
-                            },
+                            font: { size: 18, family: "'Noto Sans TC', 'Poppins', sans-serif", weight: 'bold' },
                             color: '#1f2937',
-                            padding: {
-                                top: 10,
-                                bottom: 20
-                            }
+                            padding: { top: 10, bottom: 20 }
                         },
                         legend: {
-                            labels: {
-                                color: '#4b5563',
-                                font: {
-                                    size: 14
-                                }
-                            }
+                            labels: { color: '#4b5563', font: { size: 14 } }
                         },
                         tooltip: {
-                            callbacks: {
+                             callbacks: {
                                 label: function(context) {
                                     let label = context.dataset.label || '';
                                     if (label) { label += ': '; }
@@ -488,27 +558,12 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                             ticks: {
-                                color: '#4b5563',
-                                font: {
-                                    size: 14
-                                }
-                             },
-                             grid: {
-                                color: '#e5e7eb'
-                             }
+                             ticks: { color: '#4b5563', font: { size: 12 } },
+                             grid: { color: '#e5e7eb' }
                         },
                         x: {
-                             ticks: {
-                                color: '#4b5563',
-                                font: {
-                                    size: 14,
-                                    family: "'Noto Sans TC', 'Poppins', sans-serif"
-                                }
-                             },
-                             grid: {
-                                display: false
-                             }
+                             ticks: { color: '#4b5563', font: { size: 12, family: "'Noto Sans TC', 'Poppins', sans-serif" } },
+                             grid: { display: false }
                         }
                     }
                 }
@@ -517,4 +572,5 @@
     </script>
 </body>
 </html>
+
 
